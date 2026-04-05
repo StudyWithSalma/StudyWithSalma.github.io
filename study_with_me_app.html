@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study With Me</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --beige: #f5efe6;
+    --beige-dark: #e8ddd0;
+    --rose: #e8b4b8;
+    --rose-light: #f5dde0;
+    --rose-dark: #c9848a;
+    --brown: #7d4f3c;
+    --brown-light: #a0715e;
+    --brown-dark: #4a2e22;
+    --cream: #fdf8f3;
+    --text: #3d2314;
+    --text-muted: #8a6555;
+    --shadow: rgba(125,79,60,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--beige);
+    color: var(--text);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(232,180,184,0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(160,113,94,0.2) 0%, transparent 50%);
+  }
+  .lang-btn {
+    position: fixed; top:14px; right:16px; z-index:1000;
+    display:flex; gap:6px;
+  }
+  .lang-btn button {
+    background: var(--cream); border: 1.5px solid var(--rose-dark);
+    color: var(--brown); padding:4px 12px; border-radius:20px;
+    font-family:'Poppins',sans-serif; font-size:12px; cursor:pointer;
+    transition: all .2s;
+  }
+  .lang-btn button.active { background: var(--rose-dark); color:#fff; }
+
+  /* HEADER */
+  header {
+    text-align:center; padding:24px 20px 16px;
+    background: linear-gradient(135deg, var(--cream) 0%, var(--rose-light) 100%);
+    border-bottom: 1.5px solid var(--rose);
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem,5vw,3.2rem);
+    color: var(--brown-dark);
+    letter-spacing: 2px;
+  }
+  header h1 span { color: var(--rose-dark); font-style: italic; }
+  .header-sub {
+    font-size:13px; color: var(--text-muted); margin-top:6px;
+    display:flex; justify-content:center; gap:18px; flex-wrap:wrap;
+  }
+  #live-date, #live-time {
+    background: var(--beige-dark); padding:3px 12px;
+    border-radius:20px; font-size:12px; color:var(--brown);
+  }
+
+  /* MAIN GRID */
+  main {
+    max-width:1100px; margin:0 auto; padding:18px 14px 40px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:16px;
+  }
+  @media(max-width:720px){main{grid-template-columns:1fr;}}
+
+  .card {
+    background: var(--cream);
+    border-radius:18px;
+    border: 1.5px solid var(--rose);
+    padding:20px;
+    box-shadow: 0 4px 18px var(--shadow);
+  }
+  .card-title {
+    font-family:'Playfair Display',serif;
+    font-size:1.15rem; color:var(--brown-dark);
+    margin-bottom:14px; display:flex; align-items:center; gap:8px;
+    border-bottom:1px solid var(--beige-dark); padding-bottom:10px;
+  }
+  .card-title .icon { font-size:18px; }
+
+  /* full width */
+  .full { grid-column:1/-1; }
+
+  /* POMODORO */
+  .pomo-settings {
+    display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;
+  }
+  .pomo-settings label { font-size:12px; color:var(--text-muted); display:block; margin-bottom:3px; }
+  .pomo-settings input, .pomo-settings select {
+    width:100%; padding:7px 10px; border-radius:10px;
+    border:1.5px solid var(--rose); background:var(--beige);
+    font-family:'Poppins',sans-serif; font-size:13px; color:var(--text);
+  }
+  .timer-display {
+    text-align:center; margin:16px 0;
+    font-size:clamp(2.8rem,8vw,5rem);
+    font-weight:600; color:var(--brown-dark);
+    letter-spacing:4px;
+    text-shadow: 0 2px 6px rgba(74,46,34,0.12);
+  }
+  .pomo-mode {
+    display:flex; justify-content:center; gap:8px; margin-bottom:14px;
+  }
+  .pomo-mode button {
+    padding:5px 14px; border-radius:20px;
+    border:1.5px solid var(--rose-dark);
+    background:transparent; color:var(--brown);
+    font-size:12px; cursor:pointer; font-family:'Poppins',sans-serif;
+    transition:all .2s;
+  }
+  .pomo-mode button.active { background:var(--rose-dark); color:#fff; }
+  .pomo-controls {
+    display:flex; justify-content:center; gap:10px;
+  }
+  .btn-pomo {
+    padding:9px 22px; border-radius:25px;
+    border:none; font-family:'Poppins',sans-serif;
+    font-size:13px; font-weight:500; cursor:pointer;
+    transition:all .18s;
+  }
+  .btn-start { background:var(--rose-dark); color:#fff; }
+  .btn-start:hover { background:var(--brown-light); }
+  .btn-pause { background:var(--beige-dark); color:var(--brown); border:1.5px solid var(--rose); }
+  .btn-reset { background:transparent; color:var(--text-muted); border:1.5px solid var(--beige-dark); }
+  .pomo-phase {
+    text-align:center; font-size:12px; color:var(--rose-dark);
+    font-weight:500; margin-top:8px; letter-spacing:1px; text-transform:uppercase;
+  }
+
+  /* AMBIANCE */
+  .ambiance-grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(90px,1fr)); gap:8px; margin-bottom:16px;
+  }
+  .amb-btn {
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    padding:12px 8px; border-radius:14px;
+    border:1.5px solid var(--rose); background:var(--beige);
+    cursor:pointer; transition:all .2s; font-family:'Poppins',sans-serif;
+    color:var(--brown); font-size:11px; font-weight:500;
+  }
+  .amb-btn .amb-icon { font-size:22px; }
+  .amb-btn.active { background:var(--rose-light); border-color:var(--rose-dark); }
+  .amb-volume { display:flex; align-items:center; gap:8px; margin-top:6px; }
+  .amb-volume label { font-size:12px; color:var(--text-muted); white-space:nowrap; }
+  .amb-volume input[type=range] { flex:1; accent-color:var(--rose-dark); }
+
+  .media-tabs { display:flex; gap:8px; margin:14px 0 10px; }
+  .tab-btn {
+    padding:6px 18px; border-radius:20px;
+    border:1.5px solid var(--rose); background:transparent;
+    color:var(--brown); font-size:12px; cursor:pointer;
+    font-family:'Poppins',sans-serif; transition:all .2s;
+  }
+  .tab-btn.active { background:var(--rose-dark); color:#fff; border-color:var(--rose-dark); }
+
+  .media-panel { display:none; }
+  .media-panel.show { display:block; }
+
+  .media-input-row {
+    display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;
+  }
+  .media-input-row input {
+    flex:1; min-width:140px; padding:8px 12px; border-radius:10px;
+    border:1.5px solid var(--rose); background:var(--beige);
+    font-family:'Poppins',sans-serif; font-size:12px; color:var(--text);
+  }
+  .btn-load {
+    padding:8px 16px; background:var(--rose-dark); color:#fff;
+    border:none; border-radius:10px; font-size:12px;
+    cursor:pointer; font-family:'Poppins',sans-serif;
+    white-space:nowrap;
+  }
+  .open-link {
+    display:inline-block; margin-top:6px; font-size:11px;
+    color:var(--rose-dark); text-decoration:none;
+  }
+  .open-link:hover { text-decoration:underline; }
+  iframe.media-frame {
+    width:100%; border-radius:12px; border:1.5px solid var(--rose);
+    margin-top:6px;
+  }
+
+  /* MES VIDÉOS */
+  .video-list { display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
+  .video-item {
+    display:flex; align-items:center; gap:8px;
+    padding:8px 12px; border-radius:12px;
+    background:var(--beige); border:1.5px solid var(--rose);
+    cursor:pointer; transition:all .2s;
+  }
+  .video-item:hover { background:var(--rose-light); }
+  .video-item.active { background:var(--rose-light); border-color:var(--rose-dark); }
+  .video-item-icon { font-size:18px; }
+  .video-item-name { font-size:13px; color:var(--brown); flex:1; }
+  #video-player { width:100%; border-radius:12px; border:1.5px solid var(--rose); margin-top:8px; }
+  .video-add-row { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .video-add-row input {
+    flex:1; min-width:120px; padding:7px 10px; border-radius:10px;
+    border:1.5px solid var(--rose); background:var(--beige);
+    font-size:12px; font-family:'Poppins',sans-serif; color:var(--text);
+  }
+
+  /* TODO */
+  .todo-input-row { display:flex; gap:8px; margin-bottom:12px; }
+  .todo-input-row input {
+    flex:1; padding:9px 14px; border-radius:12px;
+    border:1.5px solid var(--rose); background:var(--beige);
+    font-family:'Poppins',sans-serif; font-size:13px; color:var(--text);
+  }
+  .btn-add {
+    padding:9px 16px; background:var(--rose-dark); color:#fff;
+    border:none; border-radius:12px; font-size:13px; cursor:pointer;
+    font-family:'Poppins',sans-serif;
+  }
+  .todo-list { list-style:none; display:flex; flex-direction:column; gap:7px; }
+  .todo-item {
+    display:flex; align-items:center; gap:10px;
+    padding:9px 12px; border-radius:12px;
+    background:var(--beige); border:1.5px solid var(--rose);
+    transition:all .2s;
+  }
+  .todo-item.done { opacity:.55; }
+  .todo-item.done .todo-text { text-decoration:line-through; }
+  .todo-check {
+    width:18px; height:18px; accent-color:var(--rose-dark); cursor:pointer; flex-shrink:0;
+  }
+  .todo-text { flex:1; font-size:13px; color:var(--brown); }
+  .todo-del {
+    background:transparent; border:none; color:var(--text-muted);
+    cursor:pointer; font-size:16px; line-height:1; padding:0 2px;
+  }
+  .todo-del:hover { color:var(--rose-dark); }
+
+  /* STATS */
+  .stats-grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px;
+  }
+  .stat-card {
+    background:var(--rose-light); border-radius:14px;
+    border:1.5px solid var(--rose); padding:14px 10px;
+    text-align:center;
+  }
+  .stat-label { font-size:11px; color:var(--text-muted); margin-bottom:5px; }
+  .stat-value { font-size:1.7rem; font-weight:600; color:var(--brown-dark); }
+  .stat-unit { font-size:11px; color:var(--rose-dark); }
+  .streak-fire { font-size:22px; }
+</style>
+</head>
+<body>
+
+<div class="lang-btn">
+  <button class="active" onclick="setLang('fr')">🇫🇷 FR</button>
+  <button onclick="setLang('en')">🇬🇧 EN</button>
+</div>
+
+<header>
+  <h1>Study <span>With Me</span></h1>
+  <div class="header-sub">
+    <span id="live-date"></span>
+    <span id="live-time"></span>
+  </div>
+</header>
+
+<main>
+
+  <!-- POMODORO -->
+  <div class="card full">
+    <div class="card-title"><span class="icon">🍅</span><span data-i18n="pomo-title">Timer Pomodoro</span></div>
+    <div class="pomo-settings">
+      <div>
+        <label data-i18n="work-time">Temps de travail (min)</label>
+        <input type="number" id="work-min" value="25" min="1" max="120">
+      </div>
+      <div>
+        <label data-i18n="break-type">Type de pause</label>
+        <select id="break-type" onchange="updateBreakDuration()">
+          <option value="short" data-i18n="short-break">Courte (5 min)</option>
+          <option value="long" data-i18n="long-break">Longue (15 min)</option>
+        </select>
+      </div>
+    </div>
+    <div class="pomo-mode">
+      <button class="active" onclick="setPhase('work')" data-i18n="phase-work">Travail</button>
+      <button onclick="setPhase('break')" data-i18n="phase-break">Pause</button>
+    </div>
+    <div class="timer-display" id="timer-display">25:00</div>
+    <div class="pomo-phase" id="pomo-phase-label" data-i18n="focus-session">Session de focus</div>
+    <div class="pomo-controls">
+      <button class="btn-pomo btn-start" onclick="startTimer()" data-i18n="btn-start">▶ Start</button>
+      <button class="btn-pomo btn-pause" onclick="pauseTimer()" data-i18n="btn-pause">⏸ Pause</button>
+      <button class="btn-pomo btn-reset" onclick="resetTimer()" data-i18n="btn-reset">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- AMBIANCE -->
+  <div class="card full">
+    <div class="card-title"><span class="icon">🎧</span><span data-i18n="ambiance-title">Ambiance & Sons</span></div>
+    <div class="ambiance-grid" id="amb-grid">
+      <button class="amb-btn" data-sound="rain" onclick="toggleAmbiance('rain',this)">
+        <span class="amb-icon">🌧️</span><span data-i18n="sound-rain">Pluie</span>
+      </button>
+      <button class="amb-btn" data-sound="cafe" onclick="toggleAmbiance('cafe',this)">
+        <span class="amb-icon">☕</span><span data-i18n="sound-cafe">Café</span>
+      </button>
+      <button class="amb-btn" data-sound="plane" onclick="toggleAmbiance('plane',this)">
+        <span class="amb-icon">✈️</span><span data-i18n="sound-plane">Avion</span>
+      </button>
+      <button class="amb-btn" data-sound="nature" onclick="toggleAmbiance('nature',this)">
+        <span class="amb-icon">🌿</span><span data-i18n="sound-nature">Nature</span>
+      </button>
+      <button class="amb-btn" data-sound="fire" onclick="toggleAmbiance('fire',this)">
+        <span class="amb-icon">🔥</span><span data-i18n="sound-fire">Feu</span>
+      </button>
+      <button class="amb-btn" data-sound="waves" onclick="toggleAmbiance('waves',this)">
+        <span class="amb-icon">🌊</span><span data-i18n="sound-waves">Vagues</span>
+      </button>
+    </div>
+    <div class="amb-volume">
+      <label data-i18n="volume">Volume ambiance :</label>
+      <input type="range" min="0" max="1" step="0.05" value="0.4" id="amb-vol" oninput="setAmbianceVol(this.value)">
+    </div>
+
+    <div style="margin-top:18px;">
+      <div class="card-title" style="font-size:1rem; margin-bottom:8px;"><span class="icon">🎵</span><span data-i18n="music-title">Musique & Podcasts</span></div>
+      <div class="media-tabs">
+        <button class="tab-btn active" onclick="switchTab('youtube',this)">YouTube</button>
+        <button class="tab-btn" onclick="switchTab('spotify',this)">Spotify</button>
+      </div>
+
+      <div id="panel-youtube" class="media-panel show">
+        <div class="media-input-row">
+          <input type="text" id="yt-url" placeholder="URL YouTube (vidéo ou playlist)" value="https://www.youtube.com/embed/jfKfPfyJRdk">
+          <button class="btn-load" onclick="loadYoutube()" data-i18n="btn-load">Charger</button>
+        </div>
+        <iframe id="yt-frame" class="media-frame" height="220"
+          src="https://www.youtube.com/embed/jfKfPfyJRdk"
+          allow="autoplay; encrypted-media" allowfullscreen title="YouTube Player"></iframe>
+        <a id="yt-open" class="open-link" href="https://www.youtube.com/watch?v=jfKfPfyJRdk" target="_blank" data-i18n="open-yt">↗ Ouvrir sur YouTube</a>
+      </div>
+
+      <div id="panel-spotify" class="media-panel">
+        <div class="media-input-row">
+          <input type="text" id="sp-url" placeholder="URL embed Spotify (album, playlist, podcast)" value="https://open.spotify.com/embed/playlist/37i9dQZF1DX8Uebhn9wzrS">
+          <button class="btn-load" onclick="loadSpotify()" data-i18n="btn-load">Charger</button>
+        </div>
+        <iframe id="sp-frame" class="media-frame" height="220"
+          src="https://open.spotify.com/embed/playlist/37i9dQZF1DX8Uebhn9wzrS"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          title="Spotify Player"></iframe>
+        <a id="sp-open" class="open-link" href="https://open.spotify.com/playlist/37i9dQZF1DX8Uebhn9wzrS" target="_blank" data-i18n="open-sp">↗ Ouvrir sur Spotify</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MES VIDEOS -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🎬</span><span data-i18n="video-title">Mes Vidéos</span></div>
+    <div class="video-list" id="video-list"></div>
+    <video id="video-player" controls style="display:none;"></video>
+    <div class="video-add-row">
+      <input type="text" id="video-name-input" placeholder="Nom de la vidéo" data-i18n-ph="video-name-ph">
+      <input type="file" id="video-file-input" accept="video/mp4,video/*" style="display:none;" onchange="addVideoFromFile(this)">
+      <button class="btn-load" onclick="document.getElementById('video-file-input').click()" data-i18n="btn-add-video">+ Ajouter MP4</button>
+    </div>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:6px;" data-i18n="video-hint">Sélectionnez un fichier vidéo MP4 depuis votre appareil.</p>
+  </div>
+
+  <!-- TODO -->
+  <div class="card">
+    <div class="card-title"><span class="icon">✅</span><span data-i18n="todo-title">To-Do List</span></div>
+    <div class="todo-input-row">
+      <input type="text" id="todo-input" placeholder="Ajouter une tâche…" data-i18n-ph="todo-ph" onkeydown="if(event.key==='Enter')addTodo()">
+      <button class="btn-add" onclick="addTodo()" data-i18n="btn-add">+</button>
+    </div>
+    <ul class="todo-list" id="todo-list"></ul>
+  </div>
+
+  <!-- STATS -->
+  <div class="card full">
+    <div class="card-title"><span class="icon">📊</span><span data-i18n="stats-title">Statistiques de session</span></div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label" data-i18n="stat-pomos">🍅 Pomodoros</div>
+        <div class="stat-value" id="stat-pomos">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label" data-i18n="stat-focus">⏱ Temps de focus</div>
+        <div class="stat-value" id="stat-focus">0</div>
+        <div class="stat-unit">min</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label" data-i18n="stat-tasks">✅ Tâches complétées</div>
+        <div class="stat-value" id="stat-tasks">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label" data-i18n="stat-streak">🔥 Série en cours</div>
+        <div class="stat-value" id="stat-streak">0</div>
+        <div class="stat-unit" data-i18n="stat-streak-unit">pomodoros</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ===== I18N =====
+const translations = {
+  fr: {
+    'pomo-title':'Timer Pomodoro','work-time':'Temps de travail (min)',
+    'break-type':'Type de pause','short-break':'Courte (5 min)','long-break':'Longue (15 min)',
+    'phase-work':'Travail','phase-break':'Pause',
+    'focus-session':'Session de focus','break-session':'Pause',
+    'btn-start':'▶ Start','btn-pause':'⏸ Pause','btn-reset':'↺ Reset',
+    'ambiance-title':'Ambiance & Sons','music-title':'Musique & Podcasts',
+    'sound-rain':'Pluie','sound-cafe':'Café','sound-plane':'Avion',
+    'sound-nature':'Nature','sound-fire':'Feu','sound-waves':'Vagues',
+    'volume':'Volume ambiance :','btn-load':'Charger',
+    'open-yt':'↗ Ouvrir sur YouTube','open-sp':'↗ Ouvrir sur Spotify',
+    'video-title':'Mes Vidéos','btn-add-video':'+ Ajouter MP4',
+    'video-hint':'Sélectionnez un fichier vidéo MP4 depuis votre appareil.',
+    'video-name-ph':'Nom de la vidéo',
+    'todo-title':'To-Do List','todo-ph':'Ajouter une tâche…','btn-add':'+',
+    'stats-title':'Statistiques de session',
+    'stat-pomos':'🍅 Pomodoros','stat-focus':'⏱ Temps de focus',
+    'stat-tasks':'✅ Tâches complétées','stat-streak':'🔥 Série en cours',
+    'stat-streak-unit':'pomodoros',
+    'done-bell':'Session terminée !','break-bell':'Pause terminée !'
+  },
+  en: {
+    'pomo-title':'Pomodoro Timer','work-time':'Work time (min)',
+    'break-type':'Break type','short-break':'Short (5 min)','long-break':'Long (15 min)',
+    'phase-work':'Work','phase-break':'Break',
+    'focus-session':'Focus session','break-session':'Break time',
+    'btn-start':'▶ Start','btn-pause':'⏸ Pause','btn-reset':'↺ Reset',
+    'ambiance-title':'Ambiance & Sounds','music-title':'Music & Podcasts',
+    'sound-rain':'Rain','sound-cafe':'Café','sound-plane':'Plane',
+    'sound-nature':'Nature','sound-fire':'Fire','sound-waves':'Waves',
+    'volume':'Ambiance volume:','btn-load':'Load',
+    'open-yt':'↗ Open on YouTube','open-sp':'↗ Open on Spotify',
+    'video-title':'My Videos','btn-add-video':'+ Add MP4',
+    'video-hint':'Select an MP4 video file from your device.',
+    'video-name-ph':'Video name',
+    'todo-title':'To-Do List','todo-ph':'Add a task…','btn-add':'+',
+    'stats-title':'Session Statistics',
+    'stat-pomos':'🍅 Pomodoros','stat-focus':'⏱ Focus time',
+    'stat-tasks':'✅ Tasks completed','stat-streak':'🔥 Current streak',
+    'stat-streak-unit':'pomodoros',
+    'done-bell':'Session complete!','break-bell':'Break over!'
+  }
+};
+let lang = 'fr';
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn button').forEach((b,i)=>{
+    b.classList.toggle('active', (i===0&&l==='fr')||(i===1&&l==='en'));
+  });
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(translations[l][k]) el.textContent=translations[l][k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    const k=el.getAttribute('data-i18n-ph');
+    if(translations[l][k]) el.placeholder=translations[l][k];
+  });
+  updatePhaseLabel();
+}
+function t(k){return translations[lang][k]||k;}
+
+// ===== CLOCK =====
+function updateClock(){
+  const now=new Date();
+  const opts={weekday:'long',year:'numeric',month:'long',day:'numeric'};
+  document.getElementById('live-date').textContent=now.toLocaleDateString(lang==='fr'?'fr-FR':'en-GB',opts);
+  document.getElementById('live-time').textContent=now.toLocaleTimeString(lang==='fr'?'fr-FR':'en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(updateClock,1000); updateClock();
+
+// ===== POMODORO =====
+let pomoDuration=25*60, pomoElapsed=0, pomoRunning=false, pomoInterval=null;
+let currentPhase='work', pomosCompleted=0, totalFocusMin=0, streak=0;
+
+function getWorkSec(){return parseInt(document.getElementById('work-min').value||25)*60;}
+function getBreakSec(){return document.getElementById('break-type').value==='long'?15*60:5*60;}
+function updateBreakDuration(){if(!pomoRunning&&currentPhase==='break'){pomoDuration=getBreakSec();pomoElapsed=0;renderTimer();}}
+
+function setPhase(p){
+  currentPhase=p;
+  pomoElapsed=0; pomoRunning=false; clearInterval(pomoInterval);
+  pomoDuration=p==='work'?getWorkSec():getBreakSec();
+  renderTimer(); updatePhaseLabel();
+  document.querySelectorAll('.pomo-mode button').forEach((b,i)=>{b.classList.toggle('active',(i===0&&p==='work')||(i===1&&p==='break'));});
+}
+function updatePhaseLabel(){
+  document.getElementById('pomo-phase-label').textContent=
+    currentPhase==='work'?t('focus-session'):t('break-session');
+}
+function renderTimer(){
+  const rem=pomoDuration-pomoElapsed;
+  const m=Math.floor(rem/60).toString().padStart(2,'0');
+  const s=(rem%60).toString().padStart(2,'0');
+  document.getElementById('timer-display').textContent=m+':'+s;
+}
+function startTimer(){
+  if(pomoRunning)return;
+  if(pomoDuration===0)pomoDuration=currentPhase==='work'?getWorkSec():getBreakSec();
+  pomoRunning=true;
+  pomoInterval=setInterval(()=>{
+    pomoElapsed++;
+    renderTimer();
+    if(pomoElapsed>=pomoDuration){
+      clearInterval(pomoInterval); pomoRunning=false;
+      playAlarm();
+      if(currentPhase==='work'){
+        pomosCompleted++; streak++; totalFocusMin+=Math.round(pomoDuration/60);
+        updateStats();
+        setPhase('break');
+      } else {
+        setPhase('work');
+      }
+    }
+  },1000);
+}
+function pauseTimer(){pomoRunning=false;clearInterval(pomoInterval);}
+function resetTimer(){pauseTimer();pomoElapsed=0;pomoDuration=currentPhase==='work'?getWorkSec():getBreakSec();renderTimer();}
+
+function playAlarm(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [523,659,784,1047].forEach((freq,i)=>{
+      const osc=ctx.createOscillator(), gain=ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value=freq; osc.type='sine';
+      gain.gain.setValueAtTime(0.4,ctx.currentTime+i*0.22);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.22+0.4);
+      osc.start(ctx.currentTime+i*0.22); osc.stop(ctx.currentTime+i*0.22+0.4);
+    });
+  }catch(e){}
+}
+function updateStats(){
+  document.getElementById('stat-pomos').textContent=pomosCompleted;
+  document.getElementById('stat-focus').textContent=totalFocusMin;
+  document.getElementById('stat-streak').textContent=streak;
+}
+renderTimer();
+
+// ===== AMBIANCE SOUNDS =====
+const ambianceSounds = {
+  rain: 'https://www.soundjay.com/nature/sounds/rain-01.mp3',
+  cafe: 'https://www.soundjay.com/nature/sounds/coffee-shop-1.mp3',
+  plane: null, nature: null, fire: null, waves: null
+};
+let activeAudio={};
+function toggleAmbiance(type, btn){
+  if(activeAudio[type]){
+    activeAudio[type].pause(); delete activeAudio[type]; btn.classList.remove('active'); return;
+  }
+  btn.classList.add('active');
+  generateAmbiance(type);
+}
+function generateAmbiance(type){
+  const ctx=new(window.AudioContext||window.webkitAudioContext)();
+  const gain=ctx.createGain();
+  gain.gain.value=parseFloat(document.getElementById('amb-vol').value);
+  gain.connect(ctx.destination);
+  let source;
+  const bufSize=ctx.sampleRate*2;
+  const buf=ctx.createBuffer(1,bufSize,ctx.sampleRate);
+  const data=buf.getChannelData(0);
+  if(type==='rain'){
+    for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*0.8;
+    const filter=ctx.createBiquadFilter(); filter.type='lowpass'; filter.frequency.value=1200;
+    source=ctx.createBufferSource(); source.buffer=buf; source.loop=true;
+    source.connect(filter); filter.connect(gain);
+  } else if(type==='cafe'){
+    for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*0.3;
+    const f=ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=400; f.Q.value=0.5;
+    source=ctx.createBufferSource(); source.buffer=buf; source.loop=true;
+    source.connect(f); f.connect(gain);
+  } else if(type==='plane'){
+    for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*0.9;
+    const f=ctx.createBiquadFilter(); f.type='highpass'; f.frequency.value=200;
+    const f2=ctx.createBiquadFilter(); f2.type='lowpass'; f2.frequency.value=900;
+    source=ctx.createBufferSource(); source.buffer=buf; source.loop=true;
+    source.connect(f); f.connect(f2); f2.connect(gain);
+  } else if(type==='nature'){
+    for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*0.2;
+    const f=ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=800; f.Q.value=0.3;
+    source=ctx.createBufferSource(); source.buffer=buf; source.loop=true;
+    source.connect(f); f.connect(gain);
+  } else if(type==='fire'){
+    for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*0.5;
+    const f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=600;
+    source=ctx.createBufferSource(); source.buffer=buf; source.loop=true;
+    source.connect(f); f.connect(gain);
+  } else if(type==='waves'){
+    for(let i=0;i<bufSize;i++){
+      const t2=i/ctx.sampleRate;
+      data[i]=(Math.random()*2-1)*0.4*(0.5+0.5*Math.sin(2*Math.PI*0.2*t2));
+    }
+    const f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=900;
+    source=ctx.createBufferSource(); source.buffer=buf; source.loop=true;
+    source.connect(f); f.connect(gain);
+  }
+  source.start();
+  activeAudio[type]={pause:()=>{source.stop(); ctx.close();}, gainNode:gain};
+}
+function setAmbianceVol(v){
+  Object.values(activeAudio).forEach(a=>{if(a.gainNode) a.gainNode.gain.value=parseFloat(v);});
+}
+
+// ===== MEDIA TABS =====
+function switchTab(tab, btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.media-panel').forEach(p=>p.classList.remove('show'));
+  document.getElementById('panel-'+tab).classList.add('show');
+}
+function loadYoutube(){
+  let url=document.getElementById('yt-url').value.trim();
+  let embedUrl=url;
+  if(url.includes('watch?v='))embedUrl=url.replace('watch?v=','embed/').split('&')[0];
+  else if(url.includes('youtu.be/'))embedUrl='https://www.youtube.com/embed/'+url.split('youtu.be/')[1];
+  document.getElementById('yt-frame').src=embedUrl+'?autoplay=1';
+  const watchUrl=embedUrl.replace('/embed/','/watch?v=');
+  const a=document.getElementById('yt-open'); a.href=watchUrl; a.textContent=t('open-yt');
+}
+function loadSpotify(){
+  let url=document.getElementById('sp-url').value.trim();
+  if(!url.includes('/embed/'))url=url.replace('open.spotify.com/','open.spotify.com/embed/');
+  document.getElementById('sp-frame').src=url+'?autoplay=1';
+  const a=document.getElementById('sp-open');
+  a.href=url.replace('/embed/','open.spotify.com/'); a.textContent=t('open-sp');
+}
+
+// ===== VIDEOS =====
+let videos=[];
+function addVideoFromFile(input){
+  const file=input.files[0]; if(!file)return;
+  const nameInput=document.getElementById('video-name-input');
+  const name=nameInput.value.trim()||file.name;
+  const url=URL.createObjectURL(file);
+  videos.push({name,url}); nameInput.value='';
+  renderVideoList();
+}
+function renderVideoList(){
+  const list=document.getElementById('video-list');
+  list.innerHTML='';
+  videos.forEach((v,i)=>{
+    const div=document.createElement('div');
+    div.className='video-item'; div.dataset.i=i;
+    div.innerHTML=`<span class="video-item-icon">🎬</span><span class="video-item-name">${v.name}</span>`;
+    div.onclick=()=>playVideo(i,div);
+    list.appendChild(div);
+  });
+}
+function playVideo(i,el){
+  document.querySelectorAll('.video-item').forEach(d=>d.classList.remove('active'));
+  el.classList.add('active');
+  const player=document.getElementById('video-player');
+  player.src=videos[i].url; player.style.display='block'; player.play();
+}
+
+// ===== TODO =====
+let todos=[];
+function addTodo(){
+  const inp=document.getElementById('todo-input');
+  const text=inp.value.trim(); if(!text)return;
+  todos.push({text,done:false}); inp.value='';
+  renderTodos();
+}
+function renderTodos(){
+  const list=document.getElementById('todo-list'); list.innerHTML='';
+  todos.forEach((t2,i)=>{
+    const li=document.createElement('li');
+    li.className='todo-item'+(t2.done?' done':'');
+    li.innerHTML=`
+      <input type="checkbox" class="todo-check" ${t2.done?'checked':''} onchange="toggleTodo(${i})">
+      <span class="todo-text">${t2.text}</span>
+      <button class="todo-del" onclick="deleteTodo(${i})">×</button>`;
+    list.appendChild(li);
+  });
+}
+function toggleTodo(i){
+  todos[i].done=!todos[i].done;
+  if(todos[i].done){
+    const done=todos.filter(t=>t.done).length;
+    document.getElementById('stat-tasks').textContent=done;
+  }
+  renderTodos();
+}
+function deleteTodo(i){ todos.splice(i,1); renderTodos(); }
+</script>
+</body>
+</html>

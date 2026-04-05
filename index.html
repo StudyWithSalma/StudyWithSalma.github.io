@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study With Me</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f7e8d0, #f0d3c0, #c9a68b);
+    color: #3e2f2f;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: rgba(255,255,255,0.85);
+    border-bottom: 2px solid #c9a68b;
+  }
+  header h1 {
+    font-family: 'Roboto Slab', serif;
+    font-size: 2.5rem;
+    margin: 0;
+  }
+  header .datetime {
+    text-align: right;
+  }
+  header select {
+    margin-left: 1rem;
+    padding: 0.3rem;
+    border-radius: 5px;
+  }
+  section {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: rgba(255,255,255,0.85);
+    border-radius: 15px;
+  }
+  h2 {
+    font-family: 'Roboto Slab', serif;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  iframe, video {
+    width: 100%;
+    border-radius: 10px;
+  }
+  .tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  .tabs button {
+    padding: 0.5rem 1rem;
+    margin: 0 0.3rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #c9a68b;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .timer, .todo, .stats {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .timer button, .todo button {
+    padding: 0.5rem 1rem;
+    margin: 0.2rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #c9a68b;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  input[type="text"] {
+    padding: 0.5rem;
+    width: 70%;
+    border-radius: 8px;
+    border: 1px solid #aaa;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  li button {
+    margin-left: 0.5rem;
+    background-color: #e07b7b;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- En-tête -->
+<header>
+  <div>
+    <h1>Study With Me 🌙</h1>
+    <div class="datetime">
+      <span id="date-time"></span>
+    </div>
+  </div>
+  <div>
+    <label for="lang">Langue:</label>
+    <select id="lang">
+      <option value="fr">Français</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+</header>
+
+<!-- Timer Pomodoro -->
+<section>
+  <h2>Timer Pomodoro</h2>
+  <div class="timer">
+    <h3 id="time">25:00</h3>
+    <div>
+      <button onclick="startTimer()">Start</button>
+      <button onclick="pauseTimer()">Pause</button>
+      <button onclick="resetTimer()">Reset</button>
+    </div>
+    <div style="margin-top:0.5rem;">
+      Travail: <input type="number" id="work-time" value="25" min="1" style="width:50px;"> min
+      Pause courte: <input type="number" id="short-break" value="5" min="1" style="width:50px;"> min
+      Pause longue: <input type="number" id="long-break" value="15" min="1" style="width:50px;"> min
+    </div>
+  </div>
+</section>
+
+<!-- Ambiance et Sons -->
+<section>
+  <h2>Ambiance et Sons</h2>
+  <div style="text-align:center; margin-bottom:1rem;">
+    <label>Choisir ambiance:</label>
+    <select id="ambiance">
+      <option value="rain">Pluie</option>
+      <option value="cafe">Café</option>
+      <option value="plane">Avion</option>
+      <option value="nature">Nature</option>
+    </select>
+  </div>
+  <div class="tabs">
+    <button onclick="showTab('yt')">YouTube</button>
+    <button onclick="showTab('sp')">Spotify</button>
+  </div>
+  <div id="yt" style="display:block;">
+    <iframe id="ytFrame" src="https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=0&controls=1" 
+          title="YouTube Music" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <p style="text-align:center;"><a href="https://www.youtube.com/" target="_blank">Ouvrir sur YouTube</a></p>
+  </div>
+  <div id="sp" style="display:none;">
+    <iframe src="https://open.spotify.com/embed/playlist/YOUR_SPOTIFY_PLAYLIST_ID" width="100%" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    <p style="text-align:center;"><a href="https://open.spotify.com/" target="_blank">Ouvrir sur Spotify</a></p>
+  </div>
+</section>
+
+<!-- Mes vidéos -->
+<section>
+  <h2>Mes Vidéos</h2>
+  <video controls style="margin-bottom:1rem;">
+    <source src="video1.mp4" type="video/mp4">
+    Votre navigateur ne supporte pas la lecture vidéo.
+  </video>
+  <video controls>
+    <source src="video2.mp4" type="video/mp4">
+    Votre navigateur ne supporte pas la lecture vidéo.
+  </video>
+</section>
+
+<!-- To-Do List -->
+<section>
+  <h2>To-Do List</h2>
+  <div class="todo">
+    <input type="text" id="todo-input" placeholder="Nouvelle tâche...">
+    <button onclick="addTodo()">Ajouter</button>
+    <ul id="todo-list"></ul>
+  </div>
+</section>
+
+<!-- Statistiques de session -->
+<section>
+  <h2>Statistiques de session</h2>
+  <div class="stats">
+    <p>Pomodoro terminé: <span id="pomodoro-count">0</span></p>
+    <p>Temps de focus: <span id="focus-time">0</span> min</p>
+    <p>Tâches complétées: <span id="tasks-done">0</span></p>
+    <p>Séries en cours: <span id="series-count">0</span></p>
+  </div>
+</section>
+
+<script>
+// Date et Heure en temps réel
+function updateDateTime() {
+  const now = new Date();
+  const formatted = now.toLocaleDateString() + " " + now.toLocaleTimeString();
+  document.getElementById('date-time').textContent = formatted;
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+// Switch tabs YouTube / Spotify
+function showTab(tab) {
+  document.getElementById('yt').style.display = (tab==='yt') ? 'block' : 'none';
+  document.getElementById('sp').style.display = (tab==='sp') ? 'block' : 'none';
+}
+
+// Timer Pomodoro
+let timer;
+let totalTime = 25*60;
+let remainingTime = totalTime;
+let isRunning = false;
+let pomodoroCount = 0;
+let focusTime = 0;
+
+function updateTimerDisplay() {
+  let minutes = Math.floor(remainingTime / 60);
+  let seconds = remainingTime % 60;
+  document.getElementById('time').textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+}
+
+function startTimer() {
+  if(!isRunning) {
+    const workInput = parseInt(document.getElementById('work-time').value) || 25;
+    if(remainingTime === totalTime) remainingTime = workInput * 60;
+    isRunning = true;
+    timer = setInterval(() => {
+      if(remainingTime > 0){
+        remainingTime--;
+        updateTimerDisplay();
+      } else {
+        clearInterval(timer);
+        isRunning = false;
+        pomodoroCount++;
+        focusTime += workInput;
+        document.getElementById('pomodoro-count').textContent = pomodoroCount;
+        document.getElementById('focus-time').textContent = focusTime;
+        alert("Temps écoulé !");
+      }
+    }, 1000);
+  }
+}
+
+function pauseTimer() {
+  clearInterval(timer);
+  isRunning = false;
+}
+
+function resetTimer() {
+  clearInterval(timer);
+  remainingTime = parseInt(document.getElementById('work-time').value)*60;
+  updateTimerDisplay();
+  isRunning = false;
+}
+
+// To-Do List
+function addTodo() {
+  let input = document.getElementById('todo-input');
+  if(input.value.trim() !== ""){
+    let li = document.createElement('li');
+    li.textContent = input.value;
+    let delBtn = document.createElement('button');
+    delBtn.textContent = "Supprimer";
+    delBtn.onclick = function() {
+      li.remove();
+      document.getElementById('tasks-done').textContent = parseInt(document.getElementById('tasks-done').textContent) + 1;
+    };
+    li.appendChild(delBtn);
+    document.getElementById('todo-list').appendChild(li);
+    input.value = "";
+  }
+}
+</script>
+
+</body>
+</html>

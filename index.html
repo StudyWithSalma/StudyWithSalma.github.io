@@ -1,0 +1,663 @@
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study With Me</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #EADDC6; /* Beige */
+            --secondary-color: #F5D7D9; /* Rose */
+            --accent-color: #B79A7E; /* Marron */
+            --text-color: #333;
+            --title-font: 'Playfair Display', serif;
+            --body-font: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: var(--body-font);
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2, h3 {
+            font-family: var(--title-font);
+            color: var(--accent-color);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header-sub {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--secondary-color);
+        }
+
+        .datetime {
+            font-size: 0.9em;
+        }
+
+        .language-selector {
+            font-size: 0.9em;
+        }
+
+        .language-selector select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid var(--accent-color);
+            background-color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .pomodoro-timer, .ambiance-sons, .mes-videos, .todo-list, .session-stats {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .pomodoro-timer h2, .ambiance-sons h2, .mes-videos h2, .todo-list h2, .session-stats h2 {
+            margin-top: 0;
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .pomodoro-controls, .timer-settings {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .pomodoro-controls button, .timer-settings button, .ambiance-controls button, .todo-list button {
+            padding: 10px 20px;
+            font-family: var(--body-font);
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: var(--accent-color);
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .pomodoro-controls button:hover, .timer-settings button:hover, .ambiance-controls button:hover, .todo-list button:hover {
+            background-color: #8a735d;
+        }
+
+        .timer-display {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-family: var(--title-font);
+            color: var(--accent-color);
+        }
+
+        .ambiance-controls, .music-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .ambiance-controls button, .music-tabs button {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        .ambiance-controls button:hover, .music-tabs button:hover {
+            background-color: #e0c9b2;
+        }
+
+        .music-player-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .iframe-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 350px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .iframe-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .open-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9em;
+            text-decoration: none;
+            color: var(--accent-color);
+            transition: color 0.3s ease;
+        }
+
+        .open-link:hover {
+            color: #8a735d;
+        }
+
+        .video-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            justify-items: center;
+        }
+
+        .video-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .video-item video {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .video-item button {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .video-item button:hover {
+            background-color: #8a735d;
+        }
+
+        .todo-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .todo-input-group input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--accent-color);
+        }
+
+        .todo-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .todo-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px dashed var(--accent-color);
+            margin-bottom: 10px;
+            background-color: white;
+            border-radius: 5px;
+        }
+
+        .todo-list li input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .todo-list li span {
+            flex-grow: 1;
+            text-decoration: none;
+        }
+
+        .todo-list li.completed span {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .todo-list li .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .todo-list li .delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .session-stats ul {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .session-stats li {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .session-stats li strong {
+            display: block;
+            font-size: 1.2em;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .header-sub {
+                flex-direction: column;
+                align-items: center;
+            }
+            .pomodoro-controls, .timer-settings, .ambiance-controls, .music-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .timer-display {
+                font-size: 2.5em;
+            }
+            .video-gallery {
+                grid-template-columns: 1fr;
+            }
+            .session-stats ul {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Study With Me</h1>
+            <div class="header-sub">
+                <div class="datetime">Date et Heure : <span id="current-datetime"></span></div>
+                <div class="language-selector">
+                    Langue :
+                    <select id="language-select">
+                        <option value="fr">Français</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <section class="pomodoro-timer">
+            <h2>Timer Pomodoro</h2>
+            <div class="timer-settings">
+                <div>
+                    Temps de travail (min): <input type="number" id="work-time" value="25" min="1">
+                </div>
+                <div>
+                    Temps de pause courte (min): <input type="number" id="short-break-time" value="5" min="1">
+                </div>
+                <div>
+                    Temps de pause longue (min): <input type="number" id="long-break-time" value="15" min="1">
+                </div>
+            </div>
+            <div class="timer-display" id="pomodoro-display">25:00</div>
+            <div class="pomodoro-controls">
+                <button id="start-btn">Start</button>
+                <button id="pause-btn">Pause</button>
+                <button id="reset-btn">Reset</button>
+            </div>
+        </section>
+
+        <section class="ambiance-sons">
+            <h2>Ambiance et Sons</h2>
+            <div class="ambiance-controls">
+                <button data-ambiance="rain">Pluie</button>
+                <button data-ambiance="cafe">Café</button>
+                <button data-ambiance="plane">Avion</button>
+                <button data-ambiance="nature">Nature</button>
+            </div>
+
+            <div class="music-tabs">
+                <button data-music-source="youtube">YouTube</button>
+                <button data-music-source="spotify">Spotify</button>
+            </div>
+
+            <div class="music-player-container" id="music-player-container">
+                <!-- YouTube Player -->
+                <div id="youtube-player" class="iframe-wrapper" style="display: none;">
+                    <iframe src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <a href="" target="_blank" class="open-link">Ouvrir sur YouTube</a>
+                </div>
+                <!-- Spotify Player -->
+                <div id="spotify-player" class="iframe-wrapper" style="display: none;">
+                    <iframe src="" frameborder="0" allowtransparency="true" allow="encrypted-media" style="border-radius: 12px;"></iframe>
+                    <a href="" target="_blank" class="open-link">Ouvrir sur Spotify</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="mes-videos">
+            <h2>Mes Vidéos</h2>
+            <div class="video-gallery" id="video-gallery">
+                <!-- Videos will be loaded here -->
+                <div class="video-item">
+                    <video controls src="video1.mp4"></video>
+                    <button onclick="playVideo(this)">Jouer</button>
+                </div>
+                <div class="video-item">
+                    <video controls src="video2.mp4"></video>
+                    <button onclick="playVideo(this)">Jouer</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="todo-list">
+            <h2>To-Do List</h2>
+            <div class="todo-input-group">
+                <input type="text" id="todo-input" placeholder="Ajouter une tâche...">
+                <button id="add-todo-btn">Ajouter</button>
+            </div>
+            <ul id="todo-list-items">
+                <!-- To-do items will be loaded here -->
+                <li>
+                    <span>Apprendre le HTML</span>
+                    <input type="checkbox">
+                    <button class="delete-btn">Supprimer</button>
+                </li>
+            </ul>
+        </section>
+
+        <section class="session-stats">
+            <h2>Statistiques de Session</h2>
+            <ul id="stats-list">
+                <li>
+                    <strong>Pomodoros terminés</strong>
+                    <span id="pomodoros-completed">0</span>
+                </li>
+                <li>
+                    <strong>Temps de focus</strong>
+                    <span id="focus-time">0 min</span>
+                </li>
+                <li>
+                    <strong>Tâches complétées</strong>
+                    <span id="tasks-completed">0</span>
+                </li>
+                <li>
+                    <strong>Séries en cours</strong>
+                    <span id="current-streak">0</span>
+                </li>
+            </ul>
+        </section>
+    </div>
+
+    <audio id="alarm-sound" src="alarm.mp3"></audio>
+
+    <script>
+        // --- General Functionality ---
+        const languageSelect = document.getElementById('language-select');
+        languageSelect.addEventListener('change', (event) => {
+            // In a real app, this would redirect or reload with a language parameter
+            alert(`Changement de langue vers: ${event.target.value}. (Fonctionnalité à implémenter)`);
+        });
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('current-datetime').textContent = now.toLocaleDateString('fr-FR', options).replace(',', ' à');
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // Initial call
+
+        // --- Pomodoro Timer ---
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const pomodoroDisplay = document.getElementById('pomodoro-display');
+        const workTimeInput = document.getElementById('work-time');
+        const shortBreakInput = document.getElementById('short-break-time');
+        const longBreakInput = document.getElementById('long-break-time');
+        const alarmSound = document.getElementById('alarm-sound');
+
+        let timerInterval;
+        let timeLeft;
+        let isPaused = true;
+        let timerMode = 'work'; // 'work', 'short-break', 'long-break'
+        let pomodorosCompleted = 0;
+        let focusTime = 0;
+        let tasksCompletedCount = 0;
+        let currentStreak = 0;
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (isPaused) return;
+
+            timeLeft--;
+            pomodoroDisplay.textContent = formatTime(timeLeft);
+
+            if (timeLeft <= 0) {
+                alarmSound.play();
+                if (timerMode === 'work') {
+                    pomodorosCompleted++;
+                    focusTime += parseInt(workTimeInput.value) * 60; // Add to focus time
+                    currentStreak++;
+                    // Check if it's time for a long break
+                    if (currentStreak % 4 === 0) {
+                        timerMode = 'long-break';
+                        timeLeft = parseInt(longBreakInput.value) * 60;
+                    } else {
+                        timerMode = 'short-break';
+                        timeLeft = parseInt(shortBreakInput.value) * 60;
+                    }
+                } else {
+                    timerMode = 'work';
+                    timeLeft = parseInt(workTimeInput.value) * 60;
+                    currentStreak = 0; // Reset streak after break
+                }
+                updateStats();
+                startTimer(); // Restart timer for the new mode
+            }
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (isPaused) {
+                isPaused = false;
+                timerInterval = setInterval(startTimer, 1000);
+                startBtn.textContent = 'Resume';
+            }
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            isPaused = true;
+            clearInterval(timerInterval);
+            pauseBtn.textContent = 'Paused';
+        });
+
+        resetBtn.addEventListener('click', () => {
+            isPaused = true;
+            clearInterval(timerInterval);
+            timerMode = 'work';
+            timeLeft = parseInt(workTimeInput.value) * 60;
+            pomodoroDisplay.textContent = formatTime(timeLeft);
+            startBtn.textContent = 'Start';
+            pauseBtn.textContent = 'Pause';
+            // Reset stats for a new session if desired, or keep them
+            // pomodorosCompleted = 0;
+            // focusTime = 0;
+            // tasksCompletedCount = 0;
+            // currentStreak = 0;
+            // updateStats();
+        });
+
+        workTimeInput.addEventListener('change', () => {
+            if (timerMode === 'work') {
+                timeLeft = parseInt(workTimeInput.value) * 60;
+                pomodoroDisplay.textContent = formatTime(timeLeft);
+            }
+        });
+        shortBreakInput.addEventListener('change', () => {
+            if (timerMode === 'short-break') {
+                timeLeft = parseInt(shortBreakInput.value) * 60;
+                pomodoroDisplay.textContent = formatTime(timeLeft);
+            }
+        });
+        longBreakInput.addEventListener('change', () => {
+            if (timerMode === 'long-break') {
+                timeLeft = parseInt(longBreakInput.value) * 60;
+                pomodoroDisplay.textContent = formatTime(timeLeft);
+            }
+        });
+
+        // Initialize timer
+        timeLeft = parseInt(workTimeInput.value) * 60;
+        pomodoroDisplay.textContent = formatTime(timeLeft);
+
+        // --- Ambiance and Sounds ---
+        const ambianceControls = document.querySelector('.ambiance-controls');
+        const musicTabs = document.querySelector('.music-tabs');
+        const youtubePlayerDiv = document.getElementById('youtube-player');
+        const spotifyPlayerDiv = document.getElementById('spotify-player');
+        const youtubeIframe = youtubePlayerDiv.querySelector('iframe');
+        const youtubeLink = youtubePlayerDiv.querySelector('.open-link');
+        const spotifyIframe = spotifyPlayerDiv.querySelector('iframe');
+        const spotifyLink = spotifyPlayerDiv.querySelector('.open-link');
+
+        const ambianceAudio = new Audio(); // For background ambient sounds
+
+        ambianceControls.addEventListener('click', (event) => {
+            if (event.target.tagName === 'BUTTON') {
+                const ambiance = event.target.dataset.ambiance;
+                const audioSrc = `${ambiance}.mp3`; // Assuming you have audio files named rain.mp3, cafe.mp3, etc.
+                ambianceAudio.src = audioSrc;
+                ambianceAudio.loop = true;
+                ambianceAudio.play().catch(e => console.error("Error playing ambiance sound:", e));
+            }
+        });
+
+        musicTabs.addEventListener('click', (event) => {
+            if (event.target.tagName === 'BUTTON') {
+                const source = event.target.dataset.musicSource;
+                if (source === 'youtube') {
+                    youtubePlayerDiv.style.display = 'block';
+                    spotifyPlayerDiv.style.display = 'none';
+                    // Example YouTube embed - replace with actual playlist or video ID
+                    youtubeIframe.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&loop=1&playlist=dQw4w9WgXcQ"; // Example video
+                    youtubeLink.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+                } else if (source === 'spotify') {
+                    youtubePlayerDiv.style.display = 'none';
+                    spotifyPlayerDiv.style.display = 'block';
+                    // Example Spotify embed - replace with actual playlist URI
+                    spotifyIframe.src = "https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator&theme=0"; // Example playlist
+                    spotifyLink.href = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M";
+                }
+            }
+        });
+
+        // --- My Videos ---
+        function playVideo(button) {
+            const video = button.previousElementSibling;
+            if (video.tagName === 'VIDEO') {
+                video.play();
+            }
+        }
+
+        // --- To-Do List ---
+        const todoInput = document.getElementById('todo-input');
+        const addTodoBtn = document.getElementById('add-todo-btn');
+        const todoListItems = document.getElementById('todo-list-items');
+
+        addTodoBtn.addEventListener('click', () => {
+            const taskText = todoInput.value.trim();
+            if (taskText) {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${taskText}</span>
+                    <input type="checkbox">
+                    <button class="delete-btn">Supprimer</button>
+                `;
+                todoListItems.appendChild(li);
+                todoInput.value = '';
+                updateStats();
+            }
+        });
+
+        todoListItems.addEventListener('click', (event) => {
+            if (event.target.classList.contains('delete-btn')) {
+                event.target.closest('li').remove();
+                updateStats();
+            } else if (event.target.tagName === 'INPUT' && event.target.type === 'checkbox') {
+                event.target.closest('li').classList.toggle('completed', event.target.checked);
+                updateStats();
+            }
+        });
+
+        // --- Session Statistics ---
+        function updateStats() {
+            document.getElementById('pomodoros-completed').textContent = pomodorosCompleted;
+            document.getElementById('focus-time').textContent = `${Math.floor(focusTime / 60)} min`;
+            tasksCompletedCount = document.querySelectorAll('.todo-list li.completed').length;
+            document.getElementById('tasks-completed').textContent = tasksCompletedCount;
+            document.getElementById('current-streak').textContent = currentStreak;
+        }
+
+        // --- Additional Features ---
+        // Videos and music continue playing when navigating sections (handled by browser iframes and audio tags)
+        // Simple replacement of MP4 videos, YouTube/Spotify playlists (requires UI for selection/uploading, currently uses placeholders)
+
+    </script>
+</body>
+</html>
+```

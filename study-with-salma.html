@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study with Salma</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --rose:#f2c4ce;
+  --bordeaux:#6b2d3e;
+  --matcha:#7a9e7e;
+  --matcha-light:#b5cdb8;
+  --cream:#faf6f0;
+  --beige:#e8d5c0;
+  --warm-white:#fdf9f5;
+  --text-dark:#2c1a1e;
+  --text-mid:#5a3a42;
+  --text-soft:#8a6a72;
+  --accent:#c4606e;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--warm-white);color:var(--text-dark);overflow-x:hidden}
+
+/* NOISE TEXTURE OVERLAY */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:0.4
+}
+
+/* BG GRADIENT */
+.page-bg{
+  position:fixed;inset:0;z-index:-1;
+  background:radial-gradient(ellipse 80% 60% at 50% 30%, rgba(242,196,206,0.5) 0%, transparent 70%),
+              radial-gradient(ellipse 60% 80% at 80% 80%, rgba(107,45,62,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse 40% 50% at 10% 70%, rgba(122,158,126,0.1) 0%, transparent 50%),
+              var(--warm-white)
+}
+
+/* PAGES */
+.page{display:none;min-height:100vh;padding-bottom:4rem}
+.page.active{display:block}
+
+/* LANG TOGGLE */
+.lang-toggle{
+  position:fixed;top:1.5rem;right:1.5rem;z-index:100;
+  display:flex;gap:0.5rem
+}
+.lang-btn{
+  background:rgba(255,255,255,0.7);backdrop-filter:blur(12px);
+  border:1px solid rgba(107,45,62,0.15);border-radius:20px;
+  padding:0.35rem 0.85rem;font-size:0.78rem;font-family:'DM Sans',sans-serif;
+  color:var(--text-mid);cursor:pointer;transition:all 0.25s;font-weight:500
+}
+.lang-btn.active,.lang-btn:hover{background:var(--bordeaux);color:white;border-color:var(--bordeaux)}
+
+/* HEADER */
+.site-header{
+  text-align:center;padding:2.5rem 1rem 0;
+  position:relative
+}
+.logo{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.8rem,4vw,2.8rem);
+  font-weight:400;font-style:italic;
+  color:var(--bordeaux);
+  letter-spacing:0.02em;
+  text-shadow:0 0 40px rgba(107,45,62,0.2)
+}
+.logo span{color:var(--matcha)}
+
+/* HOME PAGE */
+.home-hero{
+  text-align:center;padding:3rem 1.5rem 2rem;
+  max-width:600px;margin:0 auto
+}
+.home-tagline{
+  font-size:clamp(1.15rem,2.5vw,1.5rem);
+  font-family:'Playfair Display',serif;
+  font-weight:400;color:var(--text-mid);
+  line-height:1.5;margin-bottom:0.6rem
+}
+.home-sub{
+  font-size:0.95rem;color:var(--text-soft);
+  font-weight:300;letter-spacing:0.02em
+}
+
+/* INPUT */
+.name-input-wrap{max-width:340px;margin:2rem auto 0}
+.name-input{
+  width:100%;padding:0.85rem 1.2rem;
+  background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);
+  border:1px solid rgba(107,45,62,0.18);border-radius:14px;
+  font-family:'DM Sans',sans-serif;font-size:0.95rem;
+  color:var(--text-dark);outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s
+}
+.name-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(196,96,110,0.12)}
+.name-input::placeholder{color:var(--text-soft)}
+
+/* DRINKS */
+.drinks-section{max-width:700px;margin:2.5rem auto 0;padding:0 1.5rem}
+.drinks-label{
+  text-align:center;font-size:0.78rem;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--text-soft);margin-bottom:1.5rem;font-weight:500
+}
+.drinks-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1rem
+}
+@media(max-width:600px){.drinks-grid{grid-template-columns:repeat(2,1fr)}}
+.drink-card{
+  background:rgba(255,255,255,0.65);backdrop-filter:blur(10px);
+  border:1px solid rgba(107,45,62,0.12);border-radius:18px;
+  padding:1.2rem 0.8rem;text-align:center;
+  cursor:pointer;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  position:relative;overflow:hidden
+}
+.drink-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 0%, rgba(242,196,206,0.3),transparent 70%);
+  opacity:0;transition:opacity 0.25s
+}
+.drink-card:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 12px 32px rgba(107,45,62,0.12)}
+.drink-card:hover::before{opacity:1}
+.drink-card.selected{
+  border-color:var(--accent);
+  background:rgba(242,196,206,0.35);
+  box-shadow:0 8px 24px rgba(196,96,110,0.18)
+}
+.drink-card.selected::before{opacity:1}
+.drink-emoji{font-size:2rem;display:block;margin-bottom:0.5rem;line-height:1}
+.drink-name{
+  font-size:0.72rem;font-weight:500;
+  color:var(--text-mid);letter-spacing:0.03em;
+  line-height:1.3
+}
+
+/* START BTN */
+.start-wrap{text-align:center;margin-top:2.5rem}
+.start-btn{
+  background:var(--bordeaux);color:white;
+  border:none;border-radius:14px;
+  padding:0.9rem 2.5rem;font-family:'DM Sans',sans-serif;
+  font-size:0.95rem;font-weight:500;cursor:pointer;
+  transition:all 0.25s;letter-spacing:0.03em;
+  box-shadow:0 8px 24px rgba(107,45,62,0.25)
+}
+.start-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 32px rgba(107,45,62,0.35)}
+.start-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* =================== DASHBOARD =================== */
+#dashboard .site-header{padding-bottom:1.5rem}
+.dash-layout{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1.5rem;max-width:960px;margin:0 auto;
+  padding:0 1.5rem
+}
+@media(max-width:700px){.dash-layout{grid-template-columns:1fr}}
+
+/* PANEL */
+.panel{
+  background:rgba(255,255,255,0.68);backdrop-filter:blur(14px);
+  border:1px solid rgba(107,45,62,0.12);border-radius:22px;
+  padding:1.8rem 1.5rem;
+}
+
+/* TIMER PANEL */
+.focus-msg{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:1.2rem;color:var(--bordeaux);
+  text-align:center;margin-bottom:1.2rem
+}
+.drink-display{text-align:center;font-size:3rem;margin-bottom:1.2rem;line-height:1}
+
+/* MODE TABS */
+.mode-tabs{display:flex;gap:0.4rem;justify-content:center;margin-bottom:1.5rem}
+.mode-tab{
+  padding:0.35rem 0.85rem;border-radius:10px;
+  border:1px solid rgba(107,45,62,0.15);
+  font-size:0.75rem;font-family:'DM Sans',sans-serif;
+  cursor:pointer;transition:all 0.2s;background:transparent;
+  color:var(--text-soft);font-weight:500
+}
+.mode-tab.active{background:var(--bordeaux);color:white;border-color:var(--bordeaux)}
+
+/* CLOCK */
+.timer-clock{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(3.5rem,8vw,5rem);
+  font-weight:400;text-align:center;
+  color:var(--text-dark);letter-spacing:0.04em;
+  margin-bottom:0.8rem;line-height:1
+}
+/* PROGRESS BAR */
+.progress-wrap{
+  background:rgba(107,45,62,0.08);border-radius:20px;
+  height:6px;margin-bottom:1.5rem;overflow:hidden
+}
+.progress-bar{
+  height:100%;border-radius:20px;
+  background:linear-gradient(90deg,var(--matcha),var(--accent));
+  transition:width 1s linear;width:0%
+}
+
+/* TIMER CONTROLS */
+.timer-btns{display:flex;gap:0.75rem;justify-content:center;margin-bottom:1.5rem}
+.t-btn{
+  padding:0.6rem 1.4rem;border-radius:12px;
+  border:1px solid rgba(107,45,62,0.2);
+  font-family:'DM Sans',sans-serif;font-size:0.85rem;
+  cursor:pointer;transition:all 0.2s;font-weight:500
+}
+.t-btn-primary{background:var(--bordeaux);color:white;border-color:var(--bordeaux)}
+.t-btn-primary:hover{background:#8a3a4a}
+.t-btn-secondary{background:transparent;color:var(--text-mid)}
+.t-btn-secondary:hover{background:rgba(107,45,62,0.08)}
+
+/* SETTINGS */
+.settings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem}
+.setting-item{text-align:center}
+.setting-label{font-size:0.68rem;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem}
+.setting-val{display:flex;align-items:center;justify-content:center;gap:0.35rem}
+.s-btn{
+  background:transparent;border:1px solid rgba(107,45,62,0.18);
+  border-radius:6px;width:22px;height:22px;
+  cursor:pointer;font-size:0.9rem;color:var(--text-mid);
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s
+}
+.s-btn:hover{background:rgba(107,45,62,0.08)}
+.setting-num{font-size:0.9rem;font-weight:500;color:var(--text-dark);min-width:24px;text-align:center}
+
+/* SESSION END MSG */
+.session-end{
+  text-align:center;font-size:0.9rem;
+  color:var(--matcha);font-weight:500;
+  min-height:1.4rem;margin-top:0.5rem
+}
+
+/* STATS */
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:0.6rem;margin-top:1.2rem
+}
+.stat-box{
+  background:rgba(107,45,62,0.06);border-radius:12px;
+  padding:0.7rem 0.5rem;text-align:center
+}
+.stat-num{font-size:1.3rem;font-weight:500;color:var(--bordeaux)}
+.stat-lbl{font-size:0.65rem;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.06em;margin-top:0.15rem}
+
+/* TODO PANEL */
+.todo-title{
+  font-family:'Playfair Display',serif;font-size:1.15rem;
+  color:var(--bordeaux);margin-bottom:1.2rem;font-style:italic
+}
+.todo-add{display:flex;gap:0.6rem;margin-bottom:1rem}
+.todo-input{
+  flex:1;padding:0.65rem 1rem;
+  background:rgba(255,255,255,0.7);
+  border:1px solid rgba(107,45,62,0.18);border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:0.88rem;
+  color:var(--text-dark);outline:none;transition:border-color 0.2s
+}
+.todo-input:focus{border-color:var(--accent)}
+.todo-input::placeholder{color:var(--text-soft)}
+.add-btn{
+  background:var(--matcha);color:white;border:none;
+  border-radius:10px;padding:0.65rem 1rem;
+  font-size:1.1rem;cursor:pointer;transition:background 0.2s
+}
+.add-btn:hover{background:#5d8461}
+.todo-list{list-style:none;display:flex;flex-direction:column;gap:0.5rem}
+.todo-item{
+  display:flex;align-items:center;gap:0.75rem;
+  padding:0.7rem 0.9rem;
+  background:rgba(255,255,255,0.5);border-radius:10px;
+  border:1px solid rgba(107,45,62,0.08);
+  transition:all 0.2s;group:true
+}
+.todo-item:hover{background:rgba(255,255,255,0.75)}
+.todo-check{
+  width:18px;height:18px;border-radius:50%;
+  border:1.5px solid rgba(107,45,62,0.3);
+  cursor:pointer;flex-shrink:0;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;
+  background:transparent
+}
+.todo-check.done{background:var(--matcha);border-color:var(--matcha)}
+.todo-check.done::after{content:'✓';font-size:0.7rem;color:white}
+.todo-text{flex:1;font-size:0.88rem;color:var(--text-dark);transition:all 0.2s}
+.todo-text.done{text-decoration:line-through;color:var(--text-soft)}
+.todo-del{
+  background:transparent;border:none;color:var(--text-soft);
+  cursor:pointer;font-size:1rem;opacity:0;
+  transition:opacity 0.2s;padding:0.1rem 0.3rem
+}
+.todo-item:hover .todo-del{opacity:1}
+
+/* SOUND PANEL */
+.sound-panel{
+  max-width:960px;margin:1.5rem auto 0;padding:0 1.5rem;
+  display:flex;gap:0.75rem;flex-wrap:wrap
+}
+.sound-btn{
+  background:rgba(255,255,255,0.65);backdrop-filter:blur(8px);
+  border:1px solid rgba(107,45,62,0.12);border-radius:12px;
+  padding:0.5rem 1.1rem;font-family:'DM Sans',sans-serif;
+  font-size:0.82rem;color:var(--text-mid);cursor:pointer;
+  transition:all 0.2s;display:flex;align-items:center;gap:0.4rem;font-weight:500
+}
+.sound-btn.on{background:rgba(122,158,126,0.2);border-color:var(--matcha);color:var(--matcha)}
+.sound-btn:hover{transform:translateY(-1px)}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.page.active .home-hero{animation:fadeUp 0.6s ease both}
+.page.active .drinks-section{animation:fadeUp 0.7s 0.1s ease both}
+.page.active .start-wrap{animation:fadeUp 0.8s 0.2s ease both}
+.page.active .panel{animation:fadeUp 0.6s ease both}
+
+/* BACK BTN */
+.back-btn{
+  position:absolute;left:1.5rem;top:50%;transform:translateY(-50%);
+  background:transparent;border:1px solid rgba(107,45,62,0.2);
+  border-radius:10px;padding:0.4rem 0.9rem;font-size:0.8rem;
+  color:var(--text-soft);cursor:pointer;transition:all 0.2s;
+  font-family:'DM Sans',sans-serif
+}
+.back-btn:hover{background:rgba(107,45,62,0.06);color:var(--text-mid)}
+.header-inner{position:relative;display:flex;align-items:center;justify-content:center}
+
+</style>
+</head>
+<body>
+<div class="page-bg"></div>
+
+<!-- LANG TOGGLE -->
+<div class="lang-toggle">
+  <button class="lang-btn active" onclick="setLang('fr')">🇫🇷 FR</button>
+  <button class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
+</div>
+
+<!-- ============ PAGE HOME ============ -->
+<div class="page active" id="home">
+  <header class="site-header">
+    <div class="logo">Study with <span>Salma</span></div>
+  </header>
+
+  <div class="home-hero">
+    <p class="home-tagline" id="tagline">Bienvenue dans ce Virtual Study Café</p>
+    <p class="home-sub" id="sub">Choisis ta boisson avant de commencer à réviser</p>
+  </div>
+
+  <div class="name-input-wrap">
+    <input class="name-input" id="nameInput" type="text" placeholder="Entre ton prénom..." oninput="checkReady()">
+  </div>
+
+  <div class="drinks-section">
+    <p class="drinks-label" id="drinksLabel">Ta boisson du jour</p>
+    <div class="drinks-grid" id="drinksGrid"></div>
+  </div>
+
+  <div class="start-wrap">
+    <button class="start-btn" id="startBtn" disabled onclick="goToDashboard()" data-fr="Commencer" data-en="Start session">Commencer</button>
+  </div>
+</div>
+
+<!-- ============ PAGE DASHBOARD ============ -->
+<div class="page" id="dashboard">
+  <header class="site-header">
+    <div class="header-inner">
+      <button class="back-btn" onclick="goHome()">← Accueil</button>
+      <div class="logo">Study with <span>Salma</span></div>
+    </div>
+  </header>
+
+  <div class="dash-layout">
+    <!-- TIMER PANEL -->
+    <div class="panel" id="timerPanel">
+      <p class="focus-msg" id="focusMsg">Concentre-toi, Name 💚</p>
+      <div class="drink-display" id="drinkDisplay">☕</div>
+
+      <div class="mode-tabs">
+        <button class="mode-tab active" onclick="setMode('focus')" id="tab-focus" data-fr="Focus" data-en="Focus">Focus</button>
+        <button class="mode-tab" onclick="setMode('break')" id="tab-break" data-fr="Pause" data-en="Break">Pause</button>
+        <button class="mode-tab" onclick="setMode('long')" id="tab-long" data-fr="Grande pause" data-en="Long Break">Grande pause</button>
+      </div>
+
+      <div class="timer-clock" id="timerClock">25:00</div>
+
+      <div class="progress-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <div class="timer-btns">
+        <button class="t-btn t-btn-primary" id="startPauseBtn" onclick="toggleTimer()">▶ Start</button>
+        <button class="t-btn t-btn-secondary" onclick="resetTimer()">↺ Reset</button>
+      </div>
+
+      <div class="settings-grid">
+        <div class="setting-item">
+          <div class="setting-label" data-fr="Focus (min)" data-en="Focus (min)">Focus (min)</div>
+          <div class="setting-val">
+            <button class="s-btn" onclick="adjSetting('focus',-1)">−</button>
+            <span class="setting-num" id="set-focus">25</span>
+            <button class="s-btn" onclick="adjSetting('focus',1)">+</button>
+          </div>
+        </div>
+        <div class="setting-item">
+          <div class="setting-label" data-fr="Pause (min)" data-en="Break (min)">Pause (min)</div>
+          <div class="setting-val">
+            <button class="s-btn" onclick="adjSetting('break',-1)">−</button>
+            <span class="setting-num" id="set-break">5</span>
+            <button class="s-btn" onclick="adjSetting('break',1)">+</button>
+          </div>
+        </div>
+        <div class="setting-item">
+          <div class="setting-label" data-fr="Gd pause" data-en="Long Brk">Gd pause</div>
+          <div class="setting-val">
+            <button class="s-btn" onclick="adjSetting('long',-1)">−</button>
+            <span class="setting-num" id="set-long">15</span>
+            <button class="s-btn" onclick="adjSetting('long',1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="session-end" id="sessionEnd"></div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-num" id="statSessions">0</div>
+          <div class="stat-lbl" id="statSessionsLbl">Sessions</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statTasks">0</div>
+          <div class="stat-lbl" id="statTasksLbl">Tâches</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statTime">0 min</div>
+          <div class="stat-lbl" id="statTimeLbl">Temps total</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODO PANEL -->
+    <div class="panel">
+      <p class="todo-title" id="todoTitle">✨ Mes tâches</p>
+      <div class="todo-add">
+        <input class="todo-input" id="todoInput" placeholder="Ajouter une tâche..." onkeydown="if(event.key==='Enter')addTodo()">
+        <button class="add-btn" onclick="addTodo()">+</button>
+      </div>
+      <ul class="todo-list" id="todoList"></ul>
+    </div>
+  </div>
+
+  <!-- SOUND CONTROLS -->
+  <div class="sound-panel">
+    <button class="sound-btn" onclick="toggleSound('cafe')" id="snd-cafe">☕ Café</button>
+    <button class="sound-btn" onclick="toggleSound('rain')" id="snd-rain">🌧 Pluie</button>
+    <button class="sound-btn" onclick="toggleSound('lofi')" id="snd-lofi">🎵 Lofi</button>
+  </div>
+</div>
+
+<script>
+// ========= STATE =========
+let lang = 'fr';
+let selectedDrink = null;
+let timerInterval = null;
+let isRunning = false;
+let currentMode = 'focus';
+let settings = { focus: 25, break: 5, long: 15 };
+let timeLeft = 25 * 60;
+let totalSeconds = 0;
+let sessionsDone = 0;
+let tasksDone = 0;
+let totalFocusSeconds = 0;
+let userName = '';
+let sounds = { cafe: null, rain: null, lofi: null };
+let soundActive = { cafe: false, rain: false, lofi: false };
+let todos = [];
+
+const drinks = [
+  { id: 'matcha', emoji: '🍵', fr: 'Matcha latte', en: 'Matcha latte' },
+  { id: 'iced-coffee', emoji: '🧊', fr: 'Iced coffee', en: 'Iced coffee' },
+  { id: 'strawberry', emoji: '🍓', fr: 'Strawberry matcha', en: 'Strawberry matcha' },
+  { id: 'frappe', emoji: '🍫', fr: 'Chocolate frappé', en: 'Chocolate frappé' },
+  { id: 'lemon', emoji: '🍋', fr: 'Lemon drink', en: 'Lemon drink' },
+  { id: 'espresso', emoji: '☕', fr: 'Espresso', en: 'Espresso' },
+  { id: 'hot-choc', emoji: '🍫', fr: 'Hot chocolate', en: 'Hot chocolate' },
+  { id: 'green-tea', emoji: '🌿', fr: 'Green tea', en: 'Green tea' },
+];
+
+const t = {
+  fr: {
+    tagline: 'Bienvenue dans ce Virtual Study Café',
+    sub: 'Choisis ta boisson avant de commencer à réviser',
+    namePH: 'Entre ton prénom...',
+    drinksLabel: 'Ta boisson du jour',
+    start: 'Commencer',
+    focusMsg: n => `Concentre-toi, ${n} 💚`,
+    sessionEnd: 'Session terminée 🎉 prends une pause !',
+    todoTitle: '✨ Mes tâches',
+    todoPH: 'Ajouter une tâche...',
+    sessions: 'Sessions',
+    tasks: 'Tâches',
+    time: 'Temps total',
+    back: '← Accueil',
+    tabFocus: 'Focus', tabBreak: 'Pause', tabLong: 'Grande pause',
+    startBtn: '▶ Start', pauseBtn: '⏸ Pause',
+    modes: { focus: 'Focus', break: 'Pause', long: 'Grande pause' }
+  },
+  en: {
+    tagline: 'Welcome to this Virtual Study Café',
+    sub: 'Choose your drink before starting your study session',
+    namePH: 'Enter your name...',
+    drinksLabel: 'Your drink of the day',
+    start: 'Start session',
+    focusMsg: n => `Let's focus, ${n} 💚`,
+    sessionEnd: 'Session completed 🎉 take a break!',
+    todoTitle: '✨ My tasks',
+    todoPH: 'Add a task...',
+    sessions: 'Sessions',
+    tasks: 'Tasks',
+    time: 'Total focus time',
+    back: '← Home',
+    tabFocus: 'Focus', tabBreak: 'Break', tabLong: 'Long Break',
+    startBtn: '▶ Start', pauseBtn: '⏸ Pause',
+    modes: { focus: 'Focus', break: 'Break', long: 'Long Break' }
+  }
+};
+
+// ========= INIT =========
+function init() {
+  renderDrinks();
+  loadFromStorage();
+  updateLang();
+  renderTodos();
+  updateStats();
+}
+
+function loadFromStorage() {
+  const saved = localStorage.getItem('sws');
+  if (saved) {
+    const d = JSON.parse(saved);
+    if (d.lang) lang = d.lang;
+    if (d.settings) settings = d.settings;
+    if (d.todos) todos = d.todos;
+    if (d.sessionsDone) sessionsDone = d.sessionsDone;
+    if (d.tasksDone) tasksDone = d.tasksDone;
+    if (d.totalFocusSeconds) totalFocusSeconds = d.totalFocusSeconds;
+    updateLangBtns();
+  }
+}
+
+function saveToStorage() {
+  localStorage.setItem('sws', JSON.stringify({
+    lang, settings, todos, sessionsDone, tasksDone, totalFocusSeconds
+  }));
+}
+
+// ========= LANG =========
+function setLang(l) {
+  lang = l;
+  updateLang();
+  updateLangBtns();
+  saveToStorage();
+}
+
+function updateLangBtns() {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn')[lang === 'fr' ? 0 : 1].classList.add('active');
+}
+
+function updateLang() {
+  const tx = t[lang];
+  document.getElementById('tagline').textContent = tx.tagline;
+  document.getElementById('sub').textContent = tx.sub;
+  document.getElementById('nameInput').placeholder = tx.namePH;
+  document.getElementById('drinksLabel').textContent = tx.drinksLabel;
+  document.getElementById('startBtn').textContent = tx.start;
+  document.getElementById('todoTitle').textContent = tx.todoTitle;
+  document.getElementById('todoInput').placeholder = tx.todoPH;
+  document.getElementById('statSessionsLbl').textContent = tx.sessions;
+  document.getElementById('statTasksLbl').textContent = tx.tasks;
+  document.getElementById('statTimeLbl').textContent = tx.time;
+  document.querySelector('.back-btn').textContent = tx.back;
+  document.getElementById('tab-focus').textContent = tx.tabFocus;
+  document.getElementById('tab-break').textContent = tx.tabBreak;
+  document.getElementById('tab-long').textContent = tx.tabLong;
+  if (userName) {
+    document.getElementById('focusMsg').textContent = tx.focusMsg(userName);
+  }
+  updateTimerBtn();
+  renderDrinks();
+}
+
+// ========= DRINKS =========
+function renderDrinks() {
+  const grid = document.getElementById('drinksGrid');
+  grid.innerHTML = '';
+  drinks.forEach(d => {
+    const card = document.createElement('div');
+    card.className = 'drink-card' + (selectedDrink === d.id ? ' selected' : '');
+    card.innerHTML = `<span class="drink-emoji">${d.emoji}</span><span class="drink-name">${d[lang]}</span>`;
+    card.onclick = () => selectDrink(d.id, d.emoji);
+    grid.appendChild(card);
+  });
+}
+
+function selectDrink(id, emoji) {
+  selectedDrink = id;
+  renderDrinks();
+  checkReady();
+}
+
+function checkReady() {
+  const name = document.getElementById('nameInput').value.trim();
+  document.getElementById('startBtn').disabled = !(name && selectedDrink);
+}
+
+// ========= NAVIGATION =========
+function goToDashboard() {
+  userName = document.getElementById('nameInput').value.trim();
+  const drink = drinks.find(d => d.id === selectedDrink);
+  document.getElementById('focusMsg').textContent = t[lang].focusMsg(userName);
+  document.getElementById('drinkDisplay').textContent = drink ? drink.emoji : '☕';
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('dashboard').classList.add('active');
+  resetTimer();
+  window.scrollTo(0, 0);
+  saveToStorage();
+}
+
+function goHome() {
+  clearInterval(timerInterval);
+  isRunning = false;
+  document.getElementById('dashboard').classList.remove('active');
+  document.getElementById('home').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ========= TIMER =========
+function setMode(mode) {
+  currentMode = mode;
+  clearInterval(timerInterval);
+  isRunning = false;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + mode).classList.add('active');
+  if (mode === 'focus') timeLeft = settings.focus * 60;
+  else if (mode === 'break') timeLeft = settings.break * 60;
+  else timeLeft = settings.long * 60;
+  totalSeconds = timeLeft;
+  updateClock();
+  updateProgress();
+  updateTimerBtn();
+  document.getElementById('sessionEnd').textContent = '';
+}
+
+function toggleTimer() {
+  if (isRunning) {
+    clearInterval(timerInterval);
+    isRunning = false;
+  } else {
+    isRunning = true;
+    timerInterval = setInterval(tick, 1000);
+  }
+  updateTimerBtn();
+}
+
+function tick() {
+  if (timeLeft <= 0) {
+    clearInterval(timerInterval);
+    isRunning = false;
+    if (currentMode === 'focus') {
+      sessionsDone++;
+      totalFocusSeconds += settings.focus * 60;
+      document.getElementById('sessionEnd').textContent = t[lang].sessionEnd;
+      setTimeout(() => { document.getElementById('sessionEnd').textContent = ''; }, 5000);
+      updateStats();
+      saveToStorage();
+    }
+    updateTimerBtn();
+    return;
+  }
+  timeLeft--;
+  updateClock();
+  updateProgress();
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  isRunning = false;
+  if (currentMode === 'focus') timeLeft = settings.focus * 60;
+  else if (currentMode === 'break') timeLeft = settings.break * 60;
+  else timeLeft = settings.long * 60;
+  totalSeconds = timeLeft;
+  updateClock();
+  updateProgress();
+  updateTimerBtn();
+  document.getElementById('sessionEnd').textContent = '';
+}
+
+function updateClock() {
+  const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+  const s = (timeLeft % 60).toString().padStart(2, '0');
+  document.getElementById('timerClock').textContent = `${m}:${s}`;
+}
+
+function updateProgress() {
+  const pct = totalSeconds > 0 ? ((totalSeconds - timeLeft) / totalSeconds) * 100 : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+function updateTimerBtn() {
+  const btn = document.getElementById('startPauseBtn');
+  if (isRunning) btn.textContent = t[lang].pauseBtn;
+  else btn.textContent = t[lang].startBtn;
+}
+
+function adjSetting(type, delta) {
+  const mins = { focus: [1, 90], break: [1, 30], long: [1, 60] };
+  settings[type] = Math.max(mins[type][0], Math.min(mins[type][1], settings[type] + delta));
+  document.getElementById('set-' + type).textContent = settings[type];
+  if (type === currentMode || (currentMode === 'break' && type === 'break') || (currentMode === 'long' && type === 'long')) {
+    if (!isRunning) resetTimer();
+  }
+  if (!isRunning) setMode(currentMode);
+  saveToStorage();
+}
+
+// ========= STATS =========
+function updateStats() {
+  document.getElementById('statSessions').textContent = sessionsDone;
+  document.getElementById('statTasks').textContent = tasksDone;
+  const mins = Math.round(totalFocusSeconds / 60);
+  document.getElementById('statTime').textContent = mins + ' min';
+}
+
+// ========= TODO =========
+function addTodo() {
+  const inp = document.getElementById('todoInput');
+  const text = inp.value.trim();
+  if (!text) return;
+  todos.push({ id: Date.now(), text, done: false });
+  inp.value = '';
+  renderTodos();
+  saveToStorage();
+}
+
+function toggleTodo(id) {
+  const todo = todos.find(t => t.id === id);
+  if (todo) {
+    todo.done = !todo.done;
+    if (todo.done) { tasksDone++; updateStats(); }
+    renderTodos();
+    saveToStorage();
+  }
+}
+
+function deleteTodo(id) {
+  todos = todos.filter(t => t.id !== id);
+  renderTodos();
+  saveToStorage();
+}
+
+function renderTodos() {
+  const list = document.getElementById('todoList');
+  list.innerHTML = '';
+  todos.forEach(todo => {
+    const li = document.createElement('li');
+    li.className = 'todo-item';
+    li.innerHTML = `
+      <div class="todo-check ${todo.done ? 'done' : ''}" onclick="toggleTodo(${todo.id})"></div>
+      <span class="todo-text ${todo.done ? 'done' : ''}">${escHtml(todo.text)}</span>
+      <button class="todo-del" onclick="deleteTodo(${todo.id})">×</button>
+    `;
+    list.appendChild(li);
+  });
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ========= SOUND =========
+function createAudio(type) {
+  // Web Audio API ambient sounds
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const nodes = [];
+
+  if (type === 'cafe') {
+    // Brown noise (café ambiance)
+    const bufferSize = ctx.sampleRate * 2;
+    const buf = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      data[i] = (last + 0.02 * white) / 1.02;
+      last = data[i];
+      data[i] *= 3.5;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf; src.loop = true;
+    const gain = ctx.createGain(); gain.gain.value = 0.08;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass'; filter.frequency.value = 400; filter.Q.value = 0.5;
+    src.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+    src.start();
+    nodes.push(src, gain, filter);
+  } else if (type === 'rain') {
+    // White noise filtered for rain
+    const bufferSize = ctx.sampleRate * 2;
+    const buf = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+    const src = ctx.createBufferSource();
+    src.buffer = buf; src.loop = true;
+    const gain = ctx.createGain(); gain.gain.value = 0.15;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'highpass'; filter.frequency.value = 1000;
+    src.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+    src.start();
+    nodes.push(src, gain, filter);
+  } else if (type === 'lofi') {
+    // Gentle lo-fi tone pulse
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc.frequency.value = 220; osc.type = 'sine';
+    osc2.frequency.value = 275; osc2.type = 'sine';
+    gain.gain.value = 0.04; gain2.gain.value = 0.03;
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc2.connect(gain2); gain2.connect(ctx.destination);
+    osc.start(); osc2.start();
+    nodes.push(osc, gain, osc2, gain2);
+  }
+
+  return { ctx, nodes };
+}
+
+function toggleSound(type) {
+  const btn = document.getElementById('snd-' + type);
+  if (soundActive[type]) {
+    if (sounds[type]) {
+      sounds[type].nodes.forEach(n => { try { n.disconnect(); if (n.stop) n.stop(); } catch(e){} });
+      sounds[type].ctx.close();
+      sounds[type] = null;
+    }
+    soundActive[type] = false;
+    btn.classList.remove('on');
+  } else {
+    try {
+      sounds[type] = createAudio(type);
+      soundActive[type] = true;
+      btn.classList.add('on');
+    } catch(e) {
+      console.log('Audio not available');
+    }
+  }
+}
+
+init();
+</script>
+</body>
+</html>
